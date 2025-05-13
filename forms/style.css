@@ -62,3 +62,10 @@
     input[type="submit"]:hover {
         background-color: #0097a7;
     }
+
+
+    .required{
+        color: red;
+        font-size: large;
+        
+    }
