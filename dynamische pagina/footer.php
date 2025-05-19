@@ -1,0 +1,1 @@
+<footer>&copy; Hamza <?= date("Y") ?></footer>

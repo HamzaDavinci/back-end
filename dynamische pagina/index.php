@@ -1,35 +1,12 @@
 <?php
 
-// standaard PDO code van W3Schools
-$host = 'localhost';
-$dbname = 'characters';
-$user = 'root';
-$pass = '';
-
-try {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die();
-}
+require 'database.php';
 
 // Karakters ophalen
-$characters = [];
-$tables = $conn->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
-
-foreach ($tables as $table) {
-    $rows = $conn->query("SELECT * FROM `$table`")->fetchAll(PDO::FETCH_ASSOC);
-    foreach ($rows as $row) {
-        $characters[] = $row;
-    }
-}
+$sql = "SELECT * FROM characters ORDER BY name ASC";
+$characters = $conn->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
 $aantalCharacters = count($characters);
-
-// Sorteer naam op alfabetisch volgoorde
-usort($characters, function ($a, $b) {
-    return strcmp($b['name'], $a['name']);
-});
 
 ?>
 <!DOCTYPE html>
@@ -38,7 +15,7 @@ usort($characters, function ($a, $b) {
     <meta charset="UTF-8">
     <title>All Characters</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <link href="resources/css/style.css" rel="stylesheet"/>
+    <link href="resources/css/style.css" rel="stylesheet">
 </head>
 <body>
 <header><h1>Alle <?php echo($aantalCharacters) ?> characters uit de database</h1></header>
@@ -46,7 +23,7 @@ usort($characters, function ($a, $b) {
     <?php foreach ($characters as $char): ?>
         <a class="item" href="character.php?id=<?= $char['id'] ?? '' ?>">
             <div class="left">
-                <img class="avatar" alt="Avatar Afbeelding" src="resources/images/<?= $char['avatar'] ?? 'default.jpg' ?>">
+                <img class="avatar" alt="<?php echo$char['name']?> Afbeelding" src="resources/images/<?= $char['avatar'] ?? 'default.jpg' ?>">
             </div>
             <div class="right">
                 <h2><?= $char['name'] ?? 'Onbekend' ?></h2>
@@ -62,6 +39,6 @@ usort($characters, function ($a, $b) {
         </a>
     <?php endforeach; ?>
 </div>
-<footer>&copy; Hamza <?= date("Y") ?></footer>
+<?php include 'footer.php'; ?>
 </body>
 </html>

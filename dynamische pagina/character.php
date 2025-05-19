@@ -1,39 +1,23 @@
 <?php
 
-// standaard PDO code van W3Schools
-$host = 'localhost';
-$dbname = 'characters';
-$user = 'root';
-$pass = '';
-$color = '';
+require 'database.php';
 
-try {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die();
-}
-
-// checkt als er een ID mee is gegeven
 $id = $_GET['id'] ?? null;
 if (!$id) {
     die('Geen character ID opgegeven.');
 }
 
-// checkt voor een specifiek ID
-$character = null;
+// direct uit de juiste tabel selecteren
+$statement = $conn->prepare("SELECT * FROM characters WHERE id = ?");
+$statement->execute([$id]);
+$character = $statement->fetch(PDO::FETCH_ASSOC);
 
-foreach ($conn->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN) as $table) {
-    $statement = $conn->prepare("SELECT * FROM `$table` WHERE id = ?");
-    $statement->execute([$id]);
-    if ($character = $statement->fetch(PDO::FETCH_ASSOC)) {
-        break;
-    }
+if (!$character) {
+    die('Character niet gevonden.');
 }
 
-
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -41,7 +25,7 @@ foreach ($conn->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN) as $table) {
     <meta charset="UTF-8">
     <title>Character - <?= $character['name'] ?></title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <link href="resources/css/style.css" rel="stylesheet"/>
+    <link href="resources/css/style.css" rel="stylesheet">
 </head>
 <body>
 <header><h1><?= $character['name'] ?></h1>
@@ -50,8 +34,8 @@ foreach ($conn->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN) as $table) {
 <div id="container">
     <div class="detail">
         <div class="left">
-            <img class="avatar" src="resources/images/<?= $character['avatar'] ?? 'default.jpg' ?>">
-            <div class="stats" style="background-color: <?php echo $color ?>">
+            <img class="avatar" alt="<?php echo$char['name']?> Afbeelding" src="resources/images/<?= $character['avatar'] ?? 'default.jpg' ?>">
+            <div class="stats" style="background-color: <?php echo $character['color'];?>">
                 <ul class="fa-ul">
                     <?php if (!empty($character['health'])): ?>
                         <li><span class="fa-li"><i class="fas fa-heart"></i></span> <?= $character['health'] ?></li>
@@ -80,6 +64,6 @@ foreach ($conn->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN) as $table) {
         <div style="clear: both"></div>
     </div>
 </div>
-<footer>&copy; Hamza <?= date("Y"); ?></footer>
+<?php include 'footer.php'; ?>
 </body>
 </html>
