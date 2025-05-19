@@ -5,6 +5,7 @@ $host = 'localhost';
 $dbname = 'characters';
 $user = 'root';
 $pass = '';
+$color = '';
 
 try {
     $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
@@ -30,6 +31,8 @@ foreach ($conn->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN) as $table) {
     }
 }
 
+
+
 ?>
 
 <!DOCTYPE html>
@@ -48,7 +51,7 @@ foreach ($conn->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN) as $table) {
     <div class="detail">
         <div class="left">
             <img class="avatar" src="resources/images/<?= $character['avatar'] ?? 'default.jpg' ?>">
-            <div class="stats" style="background-color: yellowgreen">
+            <div class="stats" style="background-color: <?php echo $color ?>">
                 <ul class="fa-ul">
                     <?php if (!empty($character['health'])): ?>
                         <li><span class="fa-li"><i class="fas fa-heart"></i></span> <?= $character['health'] ?></li>

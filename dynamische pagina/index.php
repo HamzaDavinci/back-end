@@ -28,7 +28,7 @@ $aantalCharacters = count($characters);
 
 // Sorteer naam op alfabetisch volgoorde
 usort($characters, function ($a, $b) {
-    return strcmp($a['name'], $b['name']);
+    return strcmp($b['name'], $a['name']);
 });
 
 ?>
@@ -46,7 +46,7 @@ usort($characters, function ($a, $b) {
     <?php foreach ($characters as $char): ?>
         <a class="item" href="character.php?id=<?= $char['id'] ?? '' ?>">
             <div class="left">
-                <img class="avatar" src="resources/images/<?= $char['avatar'] ?? 'default.jpg' ?>">
+                <img class="avatar" alt="Avatar Afbeelding" src="resources/images/<?= $char['avatar'] ?? 'default.jpg' ?>">
             </div>
             <div class="right">
                 <h2><?= $char['name'] ?? 'Onbekend' ?></h2>
